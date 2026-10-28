@@ -90,11 +90,16 @@ const BookFrameAnimation = forwardRef(function BookFrameAnimation(
     if (index === s.drawn && !s.dirty) return // nothing changed
 
     const canvas = ctx.canvas
-    ctx.fillStyle = background
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
     const { x, y, w, h } = s.rect
     ctx.drawImage(s.images[index], x, y, w, h)
-    if (s.vignette) ctx.drawImage(s.vignette, 0, 0)
+    // The vignette erases the frame's edges to transparency, so the page's
+    // starfield shows around the book instead of a flat backdrop.
+    if (s.vignette) {
+      ctx.globalCompositeOperation = 'destination-out'
+      ctx.drawImage(s.vignette, 0, 0)
+      ctx.globalCompositeOperation = 'source-over'
+    }
 
     s.drawn = index
     s.dirty = false
@@ -134,7 +139,7 @@ const BookFrameAnimation = forwardRef(function BookFrameAnimation(
     const y = pad.top + boxH / 2 - focusCy
 
     s.rect = { x: x * dpr, y: y * dpr, w: w * dpr, h: h * dpr }
-    s.ctx = canvas.getContext('2d', { alpha: false })
+    s.ctx = canvas.getContext('2d', { alpha: true })
     s.ctx.imageSmoothingEnabled = true
     s.ctx.imageSmoothingQuality = 'high'
     s.vignette = buildVignette(canvas.width, canvas.height, s.rect, background)
@@ -291,8 +296,8 @@ function loadOrder(n) {
 }
 
 /**
- * Pre-rendered vignette that dissolves the frame's own studio backdrop into the
- * page colour — so the book appears to float in the page, with no visible frame edge.
+ * Pre-rendered vignette mask that dissolves the frame's own backdrop away
+ * (drawn with destination-out) — so the book floats in the page's starfield, with no visible frame edge.
  */
 function buildVignette(width, height, rect, color) {
   const c = document.createElement('canvas')

@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { lenis } from '../../lib/smoothScroll'
 import './Starfield.css'
 
@@ -14,7 +13,7 @@ import './Starfield.css'
  *    a fast flick stretches stars into warp streaks, then they settle.
  *  • Star colours follow real stellar temperatures (blue-white → white → warm).
  *  • Occasional shooting stars; the pointer tilts the camera slightly.
- * Pauses while the pinned story covers the screen and when the tab is hidden.
+ * Visible around the book in the opening story too; pauses when the tab is hidden.
  */
 const TINTS = ['205,225,255', '235,242,255', '255,255,255', '255,240,220', '170,205,255']
 const DEPTH = 1600
@@ -65,14 +64,8 @@ export default function Starfield() {
       return [w / 2 + x * k - cam.x * 40 * near, h / 2 + y * k - cam.y * 40 * near]
     }
 
-    const story = () => ScrollTrigger.getById('story')
-
     const draw = (now) => {
       raf = requestAnimationFrame(draw)
-
-      // Skip work while the pinned story canvas covers the whole viewport.
-      const st = story()
-      if (st && st.isActive && st.progress < 0.96) return
 
       const v = lenis ? lenis.velocity : 0
       const target = 0.35 + Math.min(Math.abs(v), 60) * 1.1
