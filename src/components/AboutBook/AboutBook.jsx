@@ -24,7 +24,9 @@ export default function AboutBook() {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // Words: rise from below a mask, un-blur, brighten — tied to scroll.
+      // Words: rise from below a mask, un-blur, brighten.
+      // Desktop ties it to scroll; phones play it once, so the sentence is never left half-hidden.
+      const phone = window.matchMedia('(max-width: 767px)').matches
       gsap.fromTo(
         '.about__word-inner',
         { yPercent: 110, opacity: 0, filter: 'blur(6px)' },
@@ -33,8 +35,11 @@ export default function AboutBook() {
           opacity: 1,
           filter: 'blur(0px)',
           ease: 'power3.out',
-          stagger: 0.06,
-          scrollTrigger: { trigger: '.about__statement', start: 'top 82%', end: 'bottom 55%', scrub: 0.8 },
+          stagger: phone ? 0.05 : 0.06,
+          duration: phone ? 0.9 : undefined,
+          scrollTrigger: phone
+            ? { trigger: '.about__statement', start: 'top 85%', once: true }
+            : { trigger: '.about__statement', start: 'top 82%', end: 'bottom 55%', scrub: 0.8 },
         }
       )
 

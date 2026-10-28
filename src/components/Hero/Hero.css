@@ -73,9 +73,9 @@
 /* Mobile: title sits in the bottom band below the book instead of over it. */
 @media (max-width: 767px) {
   .hero {
-    justify-content: space-between;
-    padding-top: calc(66svh - 10px); /* starts right under the book */
-    padding-bottom: 26px;
+    justify-content: flex-end;
+    gap: 22px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom)); /* clears the tab bar */
   }
   .hero__top { order: 1; }
   .hero__scroll { order: 2; }

@@ -66,6 +66,9 @@ export const FRAME_CONFIG = {
    */
   focus: { x: 0.06, y: 0.04, w: 0.88, h: 0.92 },
 
+  /** Phones: a tighter crop around the book, so it fills the narrow screen. */
+  focusMobile: { x: 0.17, y: 0.08, w: 0.66, h: 0.86 },
+
   /**
    * Never enlarge a frame beyond this many times its real pixels (on any screen density).
    * Keeps the 1280×720 source crisp on large and retina displays.
@@ -77,6 +80,9 @@ export const FRAME_CONFIG = {
 
   /** Length of the pinned story, in viewport heights. More = slower, more cinematic. */
   scrollLength: 6,
+
+  /** Phones scroll faster per screen — a shorter story keeps it from feeling empty. */
+  scrollLengthMobile: 3.4,
 
   /** Scrub smoothing in seconds. Removes stepping between frames on wheel/trackpad. */
   scrub: 0.5,
@@ -107,7 +113,8 @@ export const STAGE_INSETS = {
     return { top: Math.max(h * 0.2, 160), bottom: Math.max(h * 0.12, 84), left: side, right: side }
   },
   tablet: (w, h) => ({ top: 150, bottom: Math.max(h * 0.24, 200), left: 32, right: 32 }),
-  mobile: (w, h) => ({ top: 64, bottom: Math.max(h * 0.34, 230), left: 4, right: 4 }),
+  // Phones: top bar above; the beat card and the tab bar below.
+  mobile: (w, h) => ({ top: 60, bottom: Math.max(h * 0.32, 250), left: 0, right: 0 }),
 }
 
 export const BREAKPOINTS = {

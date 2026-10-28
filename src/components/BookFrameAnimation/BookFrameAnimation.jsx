@@ -19,7 +19,7 @@ import './BookFrameAnimation.css'
  *
  * Props
  *  frames          string[]   URLs, in order
- *  focus           {x,y,w,h}  region of the frame (fractions) that must stay visible
+ *  focus           {x,y,w,h} | () => {x,y,w,h}  region of the frame (fractions) that must stay visible
  *  insets          (w,h,layout) => {top,right,bottom,left}  space to keep clear, px
  *  frameStep       number     use every Nth frame (e.g. 2 on phones)
  *  background      string     page colour the frame fades into
@@ -63,8 +63,8 @@ const BookFrameAnimation = forwardRef(function BookFrameAnimation(
   }).current
 
   // Keep latest callbacks without re-running effects.
-  const cb = useRef({ onLoadProgress, onReady, insets })
-  cb.current = { onLoadProgress, onReady, insets }
+  const cb = useRef({ onLoadProgress, onReady, insets, focus })
+  cb.current = { onLoadProgress, onReady, insets, focus }
 
   /* ───────────── Painting ───────────── */
 
@@ -139,6 +139,7 @@ const BookFrameAnimation = forwardRef(function BookFrameAnimation(
     const ih = first?.naturalHeight || nativeHeight
 
     const pad = cb.current.insets?.(cssW, cssH) ?? { top: 0, right: 0, bottom: 0, left: 0 }
+    const focus = typeof cb.current.focus === 'function' ? cb.current.focus() : cb.current.focus
     const boxW = Math.max(cssW - pad.left - pad.right, 50)
     const boxH = Math.max(cssH - pad.top - pad.bottom, 50)
 

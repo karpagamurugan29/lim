@@ -16,10 +16,13 @@ const pad = (n) => String(n).padStart(2, '0')
  *   • the track moves with scroll (scrubbed, so it glides)
  *   • each planet drifts and rotates against the track (parallax depth)
  *   • text arrives as its world slides into view
- * Tablet/mobile: a vertical sequence with the same reveals.
+ * Tablet/mobile: an app-style swipe carousel of cards with page dots.
  */
 export default function Worlds() {
   const ref = useRef(null)
+  const railRef = useRef(null)
+  const dotsRef = useRef(null)
+  const railTick = useRef(0)
 
   useLayoutEffect(() => {
     const root = ref.current
@@ -37,6 +40,7 @@ export default function Worlds() {
         ease: 'none',
         scrollTrigger: {
           id: 'worlds',
+          refreshPriority: 2,
           trigger: root.querySelector('.worlds__pin'),
           start: 'top top',
           end: () => `+=${dist()}`,
@@ -74,16 +78,15 @@ export default function Worlds() {
       })
     })
 
+    // Carousel: the cards slide in once, together, as the rail reaches the screen.
     mm.add('(max-width: 1099px)', () => {
-      q('.world').forEach((panel) => {
-        gsap.from(panel.querySelector('.world__planet'), {
-          autoAlpha: 0, scale: 0.7, rotate: -25, duration: 1.6, ease: 'expo.out',
-          scrollTrigger: { trigger: panel, start: 'top 80%', once: true },
-        })
-        gsap.from(panel.querySelectorAll('[data-w]'), {
-          autoAlpha: 0, y: 36, filter: 'blur(8px)', duration: 1.1, stagger: 0.08, ease: 'power3.out',
-          scrollTrigger: { trigger: panel, start: 'top 70%', once: true },
-        })
+      gsap.from(q('.world'), {
+        x: 60, autoAlpha: 0, duration: 1.1, stagger: 0.1, ease: 'expo.out',
+        scrollTrigger: { trigger: railRef.current, start: 'top 90%', once: true },
+      })
+      gsap.from(q('.world__planet'), {
+        scale: 0.7, rotate: -25, duration: 1.6, stagger: 0.1, ease: 'expo.out',
+        scrollTrigger: { trigger: railRef.current, start: 'top 90%', once: true },
       })
     })
 
@@ -99,6 +102,28 @@ export default function Worlds() {
       mm.revert()
     }
   }, [])
+
+  // Carousel (phones & tablets): which card is centred → active dot.
+  const onRailScroll = () => {
+    cancelAnimationFrame(railTick.current)
+    railTick.current = requestAnimationFrame(() => {
+      const rail = railRef.current
+      if (!rail) return
+      const card = rail.firstElementChild
+      const step = card ? card.offsetWidth + parseFloat(getComputedStyle(rail).columnGap || 0) : 1
+      const i = Math.round(rail.scrollLeft / step)
+      dotsRef.current?.querySelectorAll('button').forEach((b, k) => {
+        b.classList.toggle('is-active', k === i)
+        b.setAttribute('aria-selected', k === i)
+      })
+    })
+  }
+  const goTo = (i) => {
+    const rail = railRef.current
+    const card = rail?.children[i]
+    // The rail is position: relative, so offsetLeft is measured from its own edge.
+    if (card) rail.scrollTo({ left: card.offsetLeft - parseFloat(getComputedStyle(rail).paddingLeft || 0), behavior: 'smooth' })
+  }
 
   // Cursor-following light on each world (CSS variables, no re-render).
   const onMove = (e) => {
@@ -124,10 +149,12 @@ export default function Worlds() {
               Travel through them.
             </p>
             <span className="worlds__hint" data-reveal aria-hidden="true">
-              Scroll to travel <i />
+              <span className="worlds__hint-desk">Scroll to travel</span>
+              <span className="worlds__hint-touch">Swipe to travel</span> <i />
             </span>
           </header>
 
+          <div className="worlds__rail" ref={railRef} onScroll={onRailScroll}>
           {WORLDS.map((world, i) => (
             <article
               key={world.title}
@@ -167,6 +194,22 @@ export default function Worlds() {
                 </dl>
               </div>
             </article>
+          ))}
+          </div>
+        </div>
+
+        {/* Phones & tablets: swipe position + tap to jump */}
+        <div className="worlds__dots" ref={dotsRef} role="tablist" aria-label="Choose a world">
+          {WORLDS.map((world, i) => (
+            <button
+              key={world.title}
+              role="tab"
+              aria-label={world.title}
+              aria-selected={i === 0}
+              className={i === 0 ? 'is-active' : ''}
+              style={{ '--c': ACCENTS[i % ACCENTS.length] }}
+              onClick={() => goTo(i)}
+            />
           ))}
         </div>
 

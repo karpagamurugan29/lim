@@ -18,6 +18,14 @@ import { scrollTo, stopScroll, startScroll } from './lib/smoothScroll'
  *   →  Transmission  →  About  →  Turn the page.
  * A fixed starfield sits behind every section.
  */
+// Measure pinned sections in page order (by refreshPriority), then recompute positions.
+// Without the sort, a section re-created later (e.g. after a hot reload) is measured
+// before the pins above it and starts too early — overlapping the section above.
+const refresh = () => {
+  ScrollTrigger.sort()
+  ScrollTrigger.refresh()
+}
+
 export default function App() {
   const loader = useRef(null)
 
@@ -32,7 +40,7 @@ export default function App() {
     const failsafe = setTimeout(() => reveal(), 7000)
 
     // Fonts change line heights → recompute trigger positions once they land.
-    document.fonts?.ready.then(() => ScrollTrigger.refresh())
+    document.fonts?.ready.then(refresh)
 
     return () => clearTimeout(failsafe)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,7 +50,7 @@ export default function App() {
     document.documentElement.classList.remove('is-loading')
     startScroll()
     loader.current?.hide()
-    ScrollTrigger.refresh()
+    refresh()
   }, [])
 
   const onLoadProgress = useCallback((p) => loader.current?.progress(p), [])

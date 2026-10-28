@@ -157,6 +157,9 @@
 }
 
 @media (max-width: 767px) {
+  .tx { height: auto; padding: 48px 14px; }
+  .tx__panel { padding: 24px 20px; gap: 22px; border-radius: 22px; }
+  .tx__c.is-off { color: rgba(214, 232, 255, 0.32); }
   .tx__head { font-size: 9.5px; letter-spacing: 0.14em; }
   .tx__bars { display: none; }
   .tx__text { font-size: clamp(26px, 7.6vw, 34px); }

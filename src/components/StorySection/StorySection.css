@@ -96,10 +96,25 @@
   .beat__text { font-size: clamp(26px, 4.6vw, 38px); }
 }
 
+/* Phones — each beat is a glass card resting above the tab bar. */
 @media (max-width: 767px) {
-  .beat { bottom: auto; top: calc(66% - 10px); gap: 12px; }
+  .beat {
+    left: 14px;
+    right: 14px;
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    translate: none;
+    width: auto;
+    gap: 10px;
+    padding: 18px 20px 20px;
+    border-radius: 22px;
+    background: linear-gradient(160deg, rgba(20, 34, 50, 0.6), rgba(8, 17, 26, 0.5));
+    border: 1px solid rgba(200, 220, 255, 0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
   .beat__label { font-size: 10px; letter-spacing: 0.24em; }
-  .beat__text { font-size: 25px; line-height: 1.12; }
+  .beat__text { font-size: 23px; line-height: 1.15; }
 }
 
 /* ── Chapter progress ───────────────────────── */
@@ -135,6 +150,6 @@
 }
 
 @media (max-width: 767px) {
-  .story__chrome { bottom: 22px; }
+  .story__chrome { bottom: auto; top: calc(62px + env(safe-area-inset-top)); }
   .story__progress { width: 80px; }
 }

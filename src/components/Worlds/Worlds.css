@@ -328,24 +328,101 @@
   transform-origin: left center;
 }
 
-/* ── Tablet & mobile: vertical ── */
+/* Desktop: the rail is invisible to layout — worlds sit directly in the travelling track. */
+.worlds__rail { display: contents; }
+.worlds__dots,
+.worlds__hint-touch { display: none; }
+
+/* ── Tablet & mobile: app-style swipe carousel ── */
 @media (max-width: 1099px) {
-  .worlds__track { flex-direction: column; width: auto; }
-  .worlds__intro { width: auto; height: auto; padding: 120px var(--gutter) 40px; }
+  .worlds { padding-bottom: 40px; }
+  .worlds__track { display: block; width: auto; }
+  .worlds__intro {
+    width: auto;
+    height: auto;
+    gap: 18px;
+    padding: 72px var(--gutter) 28px;
+  }
+  .worlds__title { font-size: clamp(46px, 12vw, 72px); }
+  .worlds__lede { font-size: 15px; }
+  .worlds__hint-desk { display: none; }
+  .worlds__hint-touch { display: inline; }
+
+  .worlds__rail {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    padding: 6px var(--gutter) 10px;
+    scroll-padding: 0 var(--gutter);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .worlds__rail::-webkit-scrollbar { display: none; }
+
   .world {
+    flex: 0 0 min(84vw, 460px);
     width: auto;
     height: auto;
     grid-template-columns: 1fr;
     justify-items: center;
+    align-content: start;
     text-align: center;
-    padding: 80px var(--gutter);
-    gap: 40px;
+    gap: 6px;
+    padding: 26px 22px 24px;
+    scroll-snap-align: start;
+    border-radius: 28px;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, var(--c) 16%, transparent), transparent 70%),
+      linear-gradient(180deg, rgba(14, 26, 40, 0.75), rgba(6, 12, 20, 0.85));
+    border: 1px solid color-mix(in srgb, var(--c) 22%, rgba(200, 220, 255, 0.08));
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
-  .world::after { left: 20%; right: 20%; top: 0; bottom: auto; width: auto; height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent); }
-  .world__body { justify-items: center; }
-  .world__meta { text-align: left; width: 100%; }
-  .world__num { right: 50%; translate: 50% 0; bottom: auto; top: 40px; font-size: 52vw; }
-  .world__planet { width: min(72vw, 360px); }
+  .world::after { display: none; }
+  .world__num {
+    right: 16px;
+    top: 10px;
+    bottom: auto;
+    translate: none;
+    font-size: 84px;
+  }
+  .world__planet { width: min(58vw, 260px); }
+  .world__body { justify-items: center; gap: 14px; }
+  .world__title { font-size: clamp(34px, 9vw, 48px); }
+  .world__logline { font-size: 15px; line-height: 1.6; }
+  .world__meta { text-align: left; width: 100%; gap: 10px; padding-top: 16px; }
+  .world__meta > div {
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.035);
+  }
+
+  .worlds__dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-top: 18px;
+  }
+  .worlds__dots button {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.2);
+    transition: width 0.4s var(--ease), background-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .worlds__dots button.is-active {
+    width: 26px;
+    background: var(--c);
+    box-shadow: 0 0 12px var(--c);
+  }
+  /* Bigger touch target than the visible dot. */
+  .worlds__dots button { position: relative; }
+  .worlds__dots button::after { content: ''; position: absolute; inset: -12px -6px; }
+
   .worlds__chrome { display: none; }
 }
 

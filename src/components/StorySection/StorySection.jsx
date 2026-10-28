@@ -17,6 +17,8 @@ const currentLayout = () => {
 
 // Insets are recalculated on every resize, so rotating a tablet just works.
 const insetsFor = (w, h) => STAGE_INSETS[currentLayout()](w, h)
+const focusFor = () => (currentLayout() === 'mobile' ? FRAME_CONFIG.focusMobile : FRAME_CONFIG.focus)
+const scrollLength = () => (currentLayout() === 'mobile' ? FRAME_CONFIG.scrollLengthMobile : FRAME_CONFIG.scrollLength)
 
 // If no frames were added yet, fall back to the cover so the page still works.
 const FRAME_LIST = FRAMES.length ? FRAMES : [BOOK.cover]
@@ -62,9 +64,11 @@ export default function StorySection({ onLoadProgress, onReady }) {
         defaults: { ease: 'none' },
         scrollTrigger: {
           id: 'story',
+          // Pinned sections must be measured top-to-bottom, whatever order they were created in.
+          refreshPriority: 3,
           trigger: sectionRef.current,
           start: 'top top',
-          end: () => `+=${window.innerHeight * FRAME_CONFIG.scrollLength}`,
+          end: () => `+=${window.innerHeight * scrollLength()}`,
           pin: true,
           // scrub: N  → the playhead eases toward the scroll position over N seconds.
           // This is what turns discrete wheel ticks into smooth, continuous frame playback.
@@ -102,8 +106,11 @@ export default function StorySection({ onLoadProgress, onReady }) {
       tl.fromTo('.story__chrome', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.04 }, 0.05)
 
       // 3 ─ Story beats: rise + un-blur in, lift + blur out.
+      // On phones each beat holds until the next one arrives, so the card is never empty.
       const FADE = 0.035
-      STORY_BEATS.forEach((beat, i) => {
+      const phone = currentLayout() === 'mobile'
+      STORY_BEATS.forEach((b, i) => {
+        const beat = phone ? { start: b.start, end: STORY_BEATS[i + 1]?.start ?? b.end } : b
         const el = `.beat[data-index="${i}"]`
         tl.fromTo(
           el,
@@ -153,7 +160,7 @@ export default function StorySection({ onLoadProgress, onReady }) {
             ref={animRef}
             frames={FRAME_LIST}
             frameStep={frameStep}
-            focus={FRAMES.length ? FRAME_CONFIG.focus : { x: 0, y: 0, w: 1, h: 1 }}
+            focus={FRAMES.length ? focusFor : { x: 0, y: 0, w: 1, h: 1 }}
             insets={insetsFor}
             background={FRAME_CONFIG.background}
             nativeWidth={FRAME_CONFIG.nativeWidth}

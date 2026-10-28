@@ -56,12 +56,15 @@ export default function Transmission() {
 
     const ctx = gsap.context(() => {
       render(0)
+      // Desktop pins the panel while it decodes; phones decode as it scrolls past (no empty pinned screens).
+      const phone = window.matchMedia('(max-width: 767px)').matches
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: root,
-          start: 'top top',
-          end: () => `+=${window.innerHeight * 1.6}`,
-          pin: true,
+          start: phone ? 'top 80%' : 'top top',
+          refreshPriority: 1,
+          end: phone ? 'bottom 55%' : () => `+=${window.innerHeight * 1.6}`,
+          pin: !phone,
           scrub: 0.4,
           anticipatePin: 1,
           invalidateOnRefresh: true,

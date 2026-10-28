@@ -125,9 +125,31 @@
 
 /* ── Mobile: stacked, cover first, centred ── */
 @media (max-width: 767px) {
-  .details { padding-top: 100px; }
-  .details__grid { grid-template-columns: 1fr; gap: 64px; }
-  .details__cover { width: min(250px, 68vw); }
-  .details__title { font-size: 64px; }
-  .details__meta { margin-top: 40px; }
+  .details { padding: 40px var(--gutter) 56px; }
+  .details__grid { grid-template-columns: 1fr; gap: 36px; }
+  .details__cover { width: min(220px, 58vw); }
+  .details__body { text-align: center; display: grid; justify-items: center; }
+  .details__title { font-size: 60px; margin-top: 14px; }
+  .details__subtitle { margin-top: 14px; }
+  .details__dots { margin: 22px 0 20px; }
+  .details__desc { font-size: 15px; }
+
+  /* Publication facts as app-style tiles. */
+  .details__meta {
+    width: 100%;
+    margin-top: 28px;
+    border-top: 0;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    text-align: left;
+  }
+  .details__row {
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .details__row dd { text-align: left; font-size: 14px; }
 }

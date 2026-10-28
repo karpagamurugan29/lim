@@ -66,10 +66,11 @@
 .about__rule { width: 48px; height: 1px; background: var(--text-1); opacity: 0.4; }
 
 @media (max-width: 767px) {
-  .about { padding: 120px var(--gutter); }
+  .about { padding: 72px var(--gutter) 64px; }
+  .about__eyebrow { margin-bottom: 24px; }
   .about__statement { font-size: clamp(40px, 11vw, 56px); line-height: 1.04; }
   .about__line:nth-child(2),
   .about__line:nth-child(3) { padding-left: 0; }
-  .about__aside { margin-left: 0; font-size: 15px; }
+  .about__aside { margin: 40px 0 0; gap: 20px; font-size: 15px; }
   .about__ghost { font-size: 60vw; opacity: 0.8; }
 }

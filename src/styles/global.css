@@ -32,8 +32,7 @@ html {
   -webkit-text-size-adjust: 100%;
   background: var(--bg);
 }
-html.is-loading,
-html.menu-open { overflow: hidden; }
+html.is-loading { overflow: hidden; }
 
 body {
   margin: 0;
@@ -47,6 +46,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1, h2, h3, p, dl, dd, figure { margin: 0; }
