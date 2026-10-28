@@ -1,0 +1,120 @@
+.cta {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(36px, 5vh, 56px);
+  padding: 140px var(--gutter) 110px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.cta__title {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(56px, 9vw, 150px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+.cta__char-mask { display: inline-block; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+.cta__char { display: inline-block; }
+
+/* ── The book, centred ── */
+.cta__book {
+  position: relative;
+  width: clamp(160px, 16vw, 230px);
+  display: grid;
+  place-items: center;
+}
+.cta__book-float {
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 40px 50px rgba(0, 0, 0, 0.85));
+}
+.cta__book img { border-radius: 2px 5px 5px 2px; }
+.cta__halo {
+  position: absolute;
+  width: 260%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.07), rgba(63, 195, 230, 0.035) 45%, transparent 72%);
+  pointer-events: none;
+}
+
+/* ── Button ── */
+.cta__actions { display: grid; justify-items: center; gap: 28px; }
+
+.btn {
+  --h: 58px;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  height: var(--h);
+  padding: 0 14px 0 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-1);
+  overflow: hidden;
+  transition: color 0.6s var(--ease), border-color 0.6s var(--ease), transform 0.6s var(--ease);
+}
+/* Fill wipes up from below on hover — a page being lifted. */
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--text-1);
+  transform: translateY(101%);
+  border-radius: inherit;
+  transition: transform 0.7s var(--ease);
+}
+.btn__arrow {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  transition: transform 0.6s var(--ease), background-color 0.6s var(--ease);
+}
+.btn:hover { color: var(--bg); border-color: var(--text-1); }
+.btn:hover::before { transform: translateY(0); }
+.btn:hover .btn__arrow { transform: translateX(4px); background: rgba(11, 11, 12, 0.08); }
+.btn:active { transform: scale(0.98); }
+.btn:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+
+.cta__note {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.cta__footer {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(160, 160, 160, 0.6);
+}
+
+@media (max-width: 767px) {
+  .cta { gap: 40px; padding-bottom: 120px; }
+  .cta__title { font-size: clamp(52px, 15vw, 72px); }
+  .cta__book { width: 150px; }
+  .cta__footer { flex-direction: column; align-items: center; gap: 6px; }
+}

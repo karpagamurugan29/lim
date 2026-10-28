@@ -1,0 +1,136 @@
+.story {
+  position: relative;
+  height: 100vh;
+  height: 100svh; /* stable on mobile when the URL bar collapses */
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.story__stage,
+.story__stage-inner {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+}
+
+.story__curtain {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ── Story beats ─────────────────────────────── */
+.story__beats {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.beat {
+  position: absolute;
+  display: grid;
+  gap: 16px;
+  will-change: transform, opacity, filter;
+}
+
+.beat__label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--beat-accent, var(--accent));
+}
+
+.beat__rule {
+  display: block;
+  width: 48px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.28);
+  transform-origin: left center;
+}
+
+.beat__text {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(30px, 2.9vw, 46px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--text-1);
+  text-wrap: balance;
+}
+
+/* Desktop — beats live in the side bands reserved by STAGE_INSETS.desktop. */
+@media (min-width: 1100px) {
+  .beat {
+    top: 50%;
+    translate: 0 -50%;   /* separate from GSAP's transform, so both compose */
+    width: min(22vw, 330px);
+  }
+  .beat[data-side='left'] { left: clamp(40px, 5vw, 88px); }
+  .beat[data-side='right'] {
+    right: clamp(40px, 5vw, 88px);
+    text-align: right;
+    justify-items: end;
+  }
+  .beat[data-side='right'] .beat__rule { transform-origin: right center; }
+}
+
+/* Tablet & mobile — beats share one bottom band, centred under the book. */
+@media (max-width: 1099px) {
+  .beat {
+    left: 50%;
+    bottom: clamp(64px, 10vh, 110px);
+    translate: -50% 0;
+    width: min(88vw, 560px);
+    text-align: center;
+    justify-items: center;
+  }
+  .beat__rule { transform-origin: center; }
+  .beat__text { font-size: clamp(26px, 4.6vw, 38px); }
+}
+
+@media (max-width: 767px) {
+  .beat { bottom: auto; top: calc(66% - 10px); gap: 12px; }
+  .beat__label { font-size: 10px; letter-spacing: 0.24em; }
+  .beat__text { font-size: 25px; line-height: 1.12; }
+}
+
+/* ── Chapter progress ───────────────────────── */
+.story__chrome {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(22px, 3.5vh, 36px);
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text-2);
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+.story__count-current { color: var(--text-1); }
+
+.story__progress {
+  position: relative;
+  width: 120px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+.story__progress-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--text-1);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+@media (max-width: 767px) {
+  .story__chrome { bottom: 22px; }
+  .story__progress { width: 80px; }
+}

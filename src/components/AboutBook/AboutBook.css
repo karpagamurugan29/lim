@@ -1,0 +1,75 @@
+.about {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(140px, 22vh, 260px) var(--gutter);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.about__ghost {
+  position: absolute;
+  right: -2vw;
+  top: 50%;
+  translate: 0 -50%;
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(220px, 34vw, 560px);
+  letter-spacing: 0.1em;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.045);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.about__eyebrow { margin-bottom: 40px; }
+
+.about__statement {
+  position: relative;
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(44px, 7.2vw, 118px);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.about__line { display: block; }
+
+/* Each word is a mask; the inner span rises into it. */
+.about__word {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  margin-right: 0.24em;
+  vertical-align: top;
+}
+.about__word-inner { display: inline-block; will-change: transform, opacity; }
+.about__word-inner em { font-style: italic; color: var(--accent-soft); }
+
+/* The second line steps in — an editorial, asymmetric rhythm. */
+.about__line:nth-child(2) { padding-left: 0.9em; color: var(--text-2); }
+.about__line:nth-child(3) { padding-left: 1.8em; }
+
+.about__aside {
+  position: relative;
+  display: grid;
+  gap: 28px;
+  max-width: 400px;
+  margin: clamp(64px, 10vh, 120px) 0 0 auto;
+  color: var(--text-2);
+  font-size: 16px;
+  line-height: 1.75;
+}
+.about__rule { width: 48px; height: 1px; background: var(--text-1); opacity: 0.4; }
+
+@media (max-width: 767px) {
+  .about { padding: 120px var(--gutter); }
+  .about__statement { font-size: clamp(40px, 11vw, 56px); line-height: 1.04; }
+  .about__line:nth-child(2),
+  .about__line:nth-child(3) { padding-left: 0; }
+  .about__aside { margin-left: 0; font-size: 15px; }
+  .about__ghost { font-size: 60vw; opacity: 0.8; }
+}
