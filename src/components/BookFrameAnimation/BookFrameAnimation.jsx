@@ -11,7 +11,7 @@ import './BookFrameAnimation.css'
  * Why this stays fast:
  *  • No React state — everything lives in a ref, so scrolling never re-renders.
  *  • Paints are batched into requestAnimationFrame; at most one paint per display frame,
- *    and only when the frame index (or size) actually changed.
+ *    and only when the position (or size) actually changed. Neighbouring frames cross-fade.
  *  • Frames load in a coarse-to-fine order, so the whole range is scrubbable early;
  *    if a frame isn't ready yet, the nearest loaded one is drawn (no blank flashes).
  *  • The vignette that blends the frame into the page is pre-rendered once per resize.
@@ -24,6 +24,7 @@ import './BookFrameAnimation.css'
  *  frameStep       number     use every Nth frame (e.g. 2 on phones)
  *  background      string     page colour the frame fades into
  *  initialBatch    number     how many frames count as "ready" for the preloader
+ *  maxUpscale      number     largest allowed enlargement of the source, in device pixels
  *  onLoadProgress  (0..1) => void
  *  onReady         () => void
  */
@@ -37,6 +38,7 @@ const BookFrameAnimation = forwardRef(function BookFrameAnimation(
     nativeWidth = 1280,
     nativeHeight = 720,
     initialBatch = 24,
+    maxUpscale = Infinity,
     onLoadProgress,
     onReady,
     className = '',
@@ -50,8 +52,8 @@ const BookFrameAnimation = forwardRef(function BookFrameAnimation(
     list: [],          // frame URLs actually used (after frameStep)
     images: [],        // HTMLImageElement | undefined
     loaded: [],        // boolean per frame
-    target: 0,         // frame index requested by scroll
-    drawn: -1,         // frame index last painted
+    target: 0,         // fractional frame position requested by scroll
+    drawn: -1,         // position last painted
     dirty: true,       // force a repaint (resize etc.)
     raf: 0,
     ctx: null,
@@ -85,14 +87,24 @@ const BookFrameAnimation = forwardRef(function BookFrameAnimation(
     s.raf = 0
     const { ctx } = s
     if (!ctx || !s.rect) return
-    const index = nearestLoaded(s.target)
+    if (s.target === s.drawn && !s.dirty) return // nothing changed
+    const base = Math.floor(s.target)
+    const index = nearestLoaded(base)
     if (index === -1) return
-    if (index === s.drawn && !s.dirty) return // nothing changed
 
     const canvas = ctx.canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     const { x, y, w, h } = s.rect
     ctx.drawImage(s.images[index], x, y, w, h)
+    // Cross-fade into the next frame by the fractional part of the position:
+    // playback reads as continuous motion instead of discrete steps.
+    const next = base + 1
+    const mix = s.target - base
+    if (mix > 0.01 && next !== index && s.loaded[next]) {
+      ctx.globalAlpha = mix
+      ctx.drawImage(s.images[next], x, y, w, h)
+      ctx.globalAlpha = 1
+    }
     // The vignette erases the frame's edges to transparency, so the page's
     // starfield shows around the book instead of a flat backdrop.
     if (s.vignette) {
@@ -101,7 +113,7 @@ const BookFrameAnimation = forwardRef(function BookFrameAnimation(
       ctx.globalCompositeOperation = 'source-over'
     }
 
-    s.drawn = index
+    s.drawn = s.loaded[base] ? s.target : -1 // repaint once the real frame arrives
     s.dirty = false
   }
 
@@ -130,7 +142,8 @@ const BookFrameAnimation = forwardRef(function BookFrameAnimation(
     const boxW = Math.max(cssW - pad.left - pad.right, 50)
     const boxH = Math.max(cssH - pad.top - pad.bottom, 50)
 
-    const scale = Math.min(boxW / (focus.w * iw), boxH / (focus.h * ih))
+    // Fit the focus region, but never enlarge the source past `maxUpscale` device pixels.
+    const scale = Math.min(boxW / (focus.w * iw), boxH / (focus.h * ih), maxUpscale / dpr)
     const w = iw * scale
     const h = ih * scale
     const focusCx = (focus.x + focus.w / 2) * w
@@ -151,9 +164,9 @@ const BookFrameAnimation = forwardRef(function BookFrameAnimation(
   useImperativeHandle(ref, () => ({
     setProgress(p) {
       const clamped = Math.min(Math.max(p, 0), 1)
-      const i = Math.round(clamped * (s.list.length - 1))
-      if (i !== s.target) {
-        s.target = i
+      const pos = clamped * (s.list.length - 1)
+      if (Math.abs(pos - s.target) > 0.002) {
+        s.target = pos
         schedule()
       }
     },
@@ -206,8 +219,11 @@ const BookFrameAnimation = forwardRef(function BookFrameAnimation(
               cb.current.onReady?.()
             }
           }
-          // Repaint only if this frame is closer to what scroll wants than what's on screen.
-          if (Math.abs(i - s.target) < Math.abs(s.drawn - s.target) || s.drawn === -1) schedule()
+          // Repaint if a stand-in is on screen, or this is one of the two frames being blended.
+          if (s.drawn === -1 || Math.abs(i - s.target) < 1.5) {
+            s.dirty = true
+            schedule()
+          }
           resolve()
         }
         img.decode().then(finish, () => {

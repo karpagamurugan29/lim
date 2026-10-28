@@ -159,6 +159,7 @@ export default function StorySection({ onLoadProgress, onReady }) {
             nativeWidth={FRAME_CONFIG.nativeWidth}
             nativeHeight={FRAME_CONFIG.nativeHeight}
             initialBatch={FRAME_CONFIG.initialBatch}
+            maxUpscale={FRAME_CONFIG.maxUpscale}
             onLoadProgress={onLoadProgress}
             onReady={handleReady}
           />

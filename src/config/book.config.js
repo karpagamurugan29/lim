@@ -51,14 +51,13 @@ export const ACCENTS = ['#7FC9A0', '#E5B94A', '#E89AB8', '#3FC3E6']
  * `side` is used on desktop only (tablet/mobile use a bottom band).
  */
 export const STORY_BEATS = [
-  // Frame timing (50 frames): 1–10 closed in starfield, 11–13 cover lifts, 14–27 pages turn,
-  // 28–35 galaxy spread, 36–41 blueprint pages, 42–50 closing back to the cover.
-  { label: 'I — The Cover',      text: 'Every universe begins as a closed door.',            start: 0.06, end: 0.21, side: 'left' },
-  { label: 'II — The Threshold', text: 'Lift the cover. Step past the edge of the known.',   start: 0.23, end: 0.35, side: 'right' },
-  { label: 'III — The Worlds',   text: 'Four worlds. Four impossible questions.',            start: 0.37, end: 0.53, side: 'left' },
-  { label: 'IV — The Galaxy',    text: 'Stars spill from the page. Reality begins to bend.', start: 0.55, end: 0.68, side: 'right' },
-  { label: 'V — The Blueprints', text: 'Schematics for machines no one has built — yet.',    start: 0.70, end: 0.80, side: 'left' },
-  { label: 'VI — The Close',     text: 'Close the book. The questions stay open.',           start: 0.82, end: 0.95, side: 'right' },
+  // Frame timing (34 frames, 28–43 skipped): 1–10 closed in starfield, 11–13 cover lifts,
+  // 14–27 pages turn, then a cross-fade into 44–50 closing back to the cover.
+  { label: 'I — The Cover',      text: 'Every universe begins as a closed door.',          start: 0.06, end: 0.27, side: 'left' },
+  { label: 'II — The Threshold', text: 'Lift the cover. Step past the edge of the known.', start: 0.30, end: 0.42, side: 'right' },
+  { label: 'III — The Worlds',   text: 'Four worlds. Four impossible questions.',          start: 0.45, end: 0.58, side: 'left' },
+  { label: 'IV — The Pages',     text: 'Each page bends what you believed was real.',      start: 0.60, end: 0.72, side: 'right' },
+  { label: 'V — The Close',      text: 'Close the book. The questions stay open.',         start: 0.76, end: 0.95, side: 'left' },
 ]
 
 /**

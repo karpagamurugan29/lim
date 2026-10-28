@@ -28,7 +28,17 @@ const lastNumber = (path) => {
   return match ? parseInt(match[1], 10) : 0
 }
 
+/**
+ *  Frames to leave out, as inclusive [from, to] ranges of frame numbers.
+ *  28–43 are the video's zoomed-in, motion-blurred close-ups — they look soft
+ *  on screen, so the sequence cross-fades from frame 27 straight to 44.
+ *  Set to [] to play every frame.
+ */
+const SKIP = [[28, 43]]
+const skipped = (n) => SKIP.some(([from, to]) => n >= from && n <= to)
+
 const AUTO_FRAMES = Object.keys(discovered)
+  .filter((key) => !skipped(lastNumber(key)))
   .sort((a, b) => lastNumber(a) - lastNumber(b))
   .map((key) => discovered[key])
 
@@ -56,11 +66,17 @@ export const FRAME_CONFIG = {
    */
   focus: { x: 0.06, y: 0.04, w: 0.88, h: 0.92 },
 
-  /** On phones, use every Nth frame. The sequence is only 50 frames, so keep them all. */
+  /**
+   * Never enlarge a frame beyond this many times its real pixels (on any screen density).
+   * Keeps the 1280×720 source crisp on large and retina displays.
+   */
+  maxUpscale: 1.5,
+
+  /** On phones, use every Nth frame. The sequence is short, so keep them all. */
   mobileFrameStep: 1,
 
   /** Length of the pinned story, in viewport heights. More = slower, more cinematic. */
-  scrollLength: 7,
+  scrollLength: 6,
 
   /** Scrub smoothing in seconds. Removes stepping between frames on wheel/trackpad. */
   scrub: 0.5,
@@ -86,7 +102,7 @@ export const FRAME_CONFIG = {
  */
 export const STAGE_INSETS = {
   desktop: (w, h) => {
-    const side = Math.min(Math.max(w * 0.26, 280), 400)
+    const side = Math.min(Math.max(w * 0.26, 280), 560)
     // Top band leaves room for the hero headline above the book.
     return { top: Math.max(h * 0.2, 160), bottom: Math.max(h * 0.12, 84), left: side, right: side }
   },
