@@ -126,8 +126,8 @@ export default function StorySection({ onLoadProgress, onReady }) {
 
       // 4 ─ Hand-off: the stage recedes as the details section approaches.
       tl.to('.story__chrome', { autoAlpha: 0, duration: 0.03 }, 0.965)
-      // A page-coloured curtain (not opacity on the canvas) so no edge can show.
-      tl.fromTo('.story__curtain', { autoAlpha: 0 }, { autoAlpha: 0.7, duration: 0.04, ease: 'power1.in' }, 0.96)
+      // The whole stage dissolves into the starfield behind it, so there is no seam.
+      tl.to('.story__stage', { autoAlpha: 0, scale: 0.96, filter: 'blur(6px)', duration: 0.04, ease: 'power1.in' }, 0.96)
     }, sectionRef)
 
     // gsap.context().revert() kills this ScrollTrigger + timeline and restores inline styles.
@@ -171,8 +171,8 @@ export default function StorySection({ onLoadProgress, onReady }) {
       {/* Story beats — positioned in reserved bands that the book never enters */}
       <div className="story__beats">
         {STORY_BEATS.map((beat, i) => (
-          <div key={i} className="beat" data-index={i} data-side={beat.side}>
-            <span className="beat__label" style={{ '--beat-accent': ACCENTS[i % ACCENTS.length] }}>
+          <div key={i} className="beat" data-index={i} data-side={beat.side} style={{ '--beat-accent': ACCENTS[i % ACCENTS.length] }}>
+            <span className="beat__label">
               {beat.label}
             </span>
             <i className="beat__rule" aria-hidden="true" />

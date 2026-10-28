@@ -14,7 +14,7 @@
 
 .nav.is-scrolled {
   height: 60px;
-  background: rgba(11, 11, 12, 0.6);
+  background: rgba(1, 5, 10, 0.55);
   backdrop-filter: blur(18px) saturate(140%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
   border-bottom-color: rgba(255, 255, 255, 0.06);
@@ -67,6 +67,20 @@
 .nav__links a:hover { color: var(--text-1); }
 .nav__links a:hover::after { transform: scaleX(1); transform-origin: left; }
 
+/* Reading progress — a hairline of starlight along the bottom edge. */
+.nav__progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, #7fc9a0, #e5b94a, #e89ab8, #3fc3e6);
+  box-shadow: 0 0 10px rgba(143, 211, 255, 0.6);
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
 /* Mobile menu */
 .nav__toggle {
   display: none;
@@ -106,7 +120,7 @@
     justify-content: center;
     gap: 8px;
     padding: 0 var(--gutter);
-    background: rgba(11, 11, 12, 0.96);
+    background: rgba(1, 5, 10, 0.96);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     opacity: 0;

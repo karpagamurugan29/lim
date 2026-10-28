@@ -7,7 +7,7 @@
  *  Drop every frame into  /src/assets/frames/  — that's it.
  *  They're discovered automatically and sorted by the LAST number
  *  in the file name, so all of these work:
- *     ezgif-frame-001.jpg … ezgif-frame-240.jpg
+ *     frame-001.jpg       … frame-050.jpg
  *     frame-001.webp      … frame-240.webp
  *
  *  Frame 1 should be the closed book; the sequence then opens,
@@ -56,11 +56,11 @@ export const FRAME_CONFIG = {
    */
   focus: { x: 0.06, y: 0.04, w: 0.88, h: 0.92 },
 
-  /** On phones, use every Nth frame. The sequence is only 67 frames, so keep them all. */
+  /** On phones, use every Nth frame. The sequence is only 50 frames, so keep them all. */
   mobileFrameStep: 1,
 
   /** Length of the pinned story, in viewport heights. More = slower, more cinematic. */
-  scrollLength: 6,
+  scrollLength: 7,
 
   /** Scrub smoothing in seconds. Removes stepping between frames on wheel/trackpad. */
   scrub: 0.5,
@@ -69,14 +69,14 @@ export const FRAME_CONFIG = {
    * Where the frame sequence plays inside the pinned scroll (0 → 1).
    * The small holds at each end keep the closed book on screen a moment longer.
    */
-  playFrom: 0.05,
-  playTo: 0.95,
+  playFrom: 0.04,
+  playTo: 0.96,
 
   /** Must match the page background so the frame dissolves into it. */
-  background: '#0B0B0C',
+  background: '#01050A',
 
   /** Initial batch preloaded before the page reveals (the rest stream in). */
-  initialBatch: 24,
+  initialBatch: 20,
 }
 
 /**

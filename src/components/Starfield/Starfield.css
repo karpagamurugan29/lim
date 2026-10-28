@@ -1,0 +1,45 @@
+.cosmos {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 80% at 50% 120%, rgba(20, 40, 70, 0.35), transparent 60%),
+    var(--bg);
+}
+
+.cosmos__stars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Soft nebula clouds — very low contrast so the stars stay crisp in front. */
+.cosmos__nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+.cosmos__nebula--a {
+  width: 60vw; height: 60vw;
+  left: -18vw; top: -10vw;
+  background: radial-gradient(closest-side, rgba(63, 120, 230, 0.22), transparent);
+}
+.cosmos__nebula--b {
+  width: 55vw; height: 55vw;
+  right: -20vw; top: 30vh;
+  background: radial-gradient(closest-side, rgba(200, 90, 170, 0.14), transparent);
+}
+.cosmos__nebula--c {
+  width: 70vw; height: 50vw;
+  left: 15vw; bottom: -25vw;
+  background: radial-gradient(closest-side, rgba(63, 195, 230, 0.12), transparent);
+}
+
+@media (max-width: 767px) {
+  .cosmos__nebula { filter: blur(50px); }
+}

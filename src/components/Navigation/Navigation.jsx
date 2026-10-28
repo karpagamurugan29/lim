@@ -5,9 +5,10 @@ import { scrollTo, stopScroll, startScroll } from '../../lib/smoothScroll'
 import './Navigation.css'
 
 const LINKS = [
-  { id: 'about', label: 'About' },
   { id: 'story', label: 'Story' },
   { id: 'details', label: 'Details' },
+  { id: 'worlds', label: 'Worlds' },
+  { id: 'about', label: 'About' },
 ]
 
 /**
@@ -28,10 +29,14 @@ export default function Navigation() {
   // Transparent at the top; a soft frosted bar once the page moves.
   // Toggled with a class (no React state) so scrolling never re-renders.
   useEffect(() => {
+    const bar = navRef.current.querySelector('.nav__progress')
     const st = ScrollTrigger.create({
       start: 0,
       end: 'max',
-      onUpdate: (self) => navRef.current?.classList.toggle('is-scrolled', self.scroll() > 40),
+      onUpdate: (self) => {
+        navRef.current?.classList.toggle('is-scrolled', self.scroll() > 40)
+        bar.style.transform = `scaleX(${self.progress})`
+      },
     })
     return () => st.kill()
   }, [])
@@ -75,6 +80,8 @@ export default function Navigation() {
         <span />
         <span />
       </button>
+
+      <span className="nav__progress" aria-hidden="true" />
 
       <div id="nav-sheet" className="nav__sheet" aria-hidden={!open}>
         {LINKS.map((l, i) => (

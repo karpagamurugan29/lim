@@ -6,11 +6,17 @@ import BookDetails from './components/BookDetails'
 import AboutBook from './components/AboutBook'
 import FinalCTA from './components/FinalCTA'
 import Preloader from './components/Preloader'
+import Starfield from './components/Starfield'
+import Worlds from './components/Worlds'
+import Signals from './components/Signals'
+import Transmission from './components/Transmission'
 import { scrollTo, stopScroll, startScroll } from './lib/smoothScroll'
 
 /**
  * Page order — one continuous shot:
- *   [Story: hero → open → read → close]  →  Details  →  About  →  Turn the page.
+ *   [Story: hero → open → read → close]  →  Details  →  Worlds  →  Signals
+ *   →  Transmission  →  About  →  Turn the page.
+ * A fixed starfield sits behind every section.
  */
 export default function App() {
   const loader = useRef(null)
@@ -44,10 +50,14 @@ export default function App() {
   return (
     <>
       <Preloader ref={loader} />
+      <Starfield />
       <Navigation />
       <main>
         <StorySection onLoadProgress={onLoadProgress} onReady={reveal} />
         <BookDetails />
+        <Worlds />
+        <Signals />
+        <Transmission />
         <AboutBook />
         <FinalCTA />
       </main>

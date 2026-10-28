@@ -3,7 +3,8 @@
   height: 100vh;
   height: 100svh; /* stable on mobile when the URL bar collapses */
   overflow: hidden;
-  background: var(--bg);
+  /* Transparent: when the stage fades out, the starfield behind it takes over seamlessly. */
+  background: transparent;
 }
 
 .story__stage,
@@ -42,13 +43,15 @@
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--beat-accent, var(--accent));
+  text-shadow: 0 0 14px var(--beat-accent, var(--accent));
 }
 
 .beat__rule {
   display: block;
   width: 48px;
   height: 1px;
-  background: rgba(255, 255, 255, 0.28);
+  background: linear-gradient(90deg, var(--beat-accent, var(--accent)), rgba(255, 255, 255, 0.2));
+  box-shadow: 0 0 10px var(--beat-accent, var(--accent));
   transform-origin: left center;
 }
 
@@ -59,6 +62,7 @@
   line-height: 1.08;
   letter-spacing: -0.015em;
   color: var(--text-1);
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.6);
   text-wrap: balance;
 }
 
